@@ -36,7 +36,31 @@ router.post('/createEvent', function(req, res, next) {
     .catch((error) => {
       res.status(500).json({message: 'Data insertion error ! Internal Server Error'});
     });
+});
 
+router.get('/getEventByUser', function(req, res, next) {
+  const data = {
+    organizer: req.query.name,
+  }
+
+  const filterKey = "organizer"
+  const filterValue = data.organizer
+
+  const eventCollection = db.collection("event");
+
+  eventCollection.where(filterKey, "==", filterValue).get()
+  .then((querySnapshot) => {
+    const filteredItems = [];
+    querySnapshot.forEach((doc) => {
+      const itemData = doc.data();
+      filteredItems.push(itemData);
+    });
+    console.log(filteredItems);
+    res.status(200).json({data:filteredItems});
+  })
+  .catch((error) => {
+    res.status(500).json({message: 'Error fetching data'});
+  });
 });
 
 module.exports = router;
