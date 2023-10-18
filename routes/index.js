@@ -26,7 +26,9 @@ router.post('/createEvent', function(req, res, next) {
     venue: req.body.venue,
     date: req.body.date,
     slotsRemaining: req.body.slotsRemaining,
-    isPrivate: req.body.isPrivate
+    isPrivate: req.body.isPrivate,
+    capacity: req.body.capacity,
+    attendees: req.body.attendees
   }
 
   db.collection('event').doc(getRandomId(8)).set(data)
