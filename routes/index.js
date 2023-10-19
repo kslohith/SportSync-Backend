@@ -116,9 +116,10 @@ router.post('/event', (req, res) => {
 
   eventCollection.where("eventId", "==", eventId).get().then((querySnapshot) => {
     if (!querySnapshot.empty) {
-      querySnapshot.docs[0].ref.update(updateData)
-      .then(()=>res.status(200).json({message: 'Success. Document updated'}))
-      .catch((err) => res.status(500).json({message: 'Error updating document'}));
+      res.status(200).json({data:querySnapshot.docs[0].data()})
+      // querySnapshot.docs[0].ref.update(updateData)
+      // .then(()=>res.status(200).json({message: 'Success. Document updated'}))
+      // .catch((err) => res.status(500).json({message: 'Error updating document'}));
     } else {
       res.status(500).json({message: 'No document with id'});
     }
