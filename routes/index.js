@@ -90,28 +90,38 @@ router.get('/event', (req, res) => {
   });
 });
 
-// router.post('/event', (req, res) => {
-//   const eventId = req.query.eventId;
-//   const eventCollection = db.collection("event");
+router.post('/event', (req, res) => {
+  const eventId = req.query.eventId;
+  const eventCollection = db.collection("event");
 
-//   const updateFields = Object.keys(req.body);
-//   const updateData = {};
-//   updateFields.forEach((field) => {
-//     updateData[field]=req.body[field];
-//   });
+  const updateFields = Object.keys(req.body);
+  const updateData = {};
+  updateFields.forEach((field) => {
+    if (field === 'attendees' || field === 'requestedAttendees') {
+      if (req.body[field].op === 'remove') {
+        updateData[field] = firebase.firestore.FieldValue.arrayRemove(req.body[field].list);
+      } else {
+        updateData[field] = firebase.firestore.FieldValue.arrayUnion(req.body[field].list);
+      }
+    } else {
+      updateData[field]= req.body[field];
+    }
+  });
+  
+  if (updateData.length() == 0) res.status(500).json({message: 'No data provided'});
 
-//   eventCollection.where("eventId", "==", eventId).get().then((querySnapshot) => {
-//     if (!querySnapshot.empty) {
-//       querySnapshot.docs[0].ref.update(updateData)
-//       .then(()=>res.status(200).json({message: 'Success. Document updated'}))
-//       .catch((err) => res.status(500).json({message: 'Error updating document'}));
-//     } else {
-//       res.status(500).json({message: 'No document with id'});
-//     }
-//   }).catch((err) => {
-//     res.status(500).json({message: 'Error fetching document'});
-//   });
-// });
+  eventCollection.where("eventId", "==", eventId).get().then((querySnapshot) => {
+    if (!querySnapshot.empty) {
+      querySnapshot.docs[0].ref.update(updateData)
+      .then(()=>res.status(200).json({message: 'Success. Document updated'}))
+      .catch((err) => res.status(500).json({message: 'Error updating document'}));
+    } else {
+      res.status(500).json({message: 'No document with id'});
+    }
+  }).catch((err) => {
+    res.status(500).json({message: 'Error fetching document'});
+  });
+});
 
 
 module.exports = router;
