@@ -110,7 +110,7 @@ router.post('/event', (req, res) => {
       updateData[field]= req.body[field];
     }
   });
-  res.status(200).json({updateData});
+  res.status(200).json(updateData);
 
   // if (updateData.length() == 0) res.status(500).json({message: 'No data provided'});
 
