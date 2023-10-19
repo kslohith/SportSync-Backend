@@ -31,7 +31,8 @@ router.post('/createEvent', function(req, res, next) {
     attendees: req.body.attendees,
     dateOfCreation: req.body.dateOfCreation,
     eventSkill: req.body.eventSkill,
-    requestedAttendees: req.body.requestedAttendees
+    requestedAttendees: req.body.requestedAttendees,
+    eventId: getRandomId(8)
   }
 
   db.collection('event').doc(getRandomId(8)).set(data)
