@@ -110,22 +110,22 @@ router.post('/event', (req, res) => {
       updateData[field]= req.body[field];
     }
   });
-  //res.status(200).json(updateData);
-
+  
   if (updateData.length() == 0) res.status(500).json({message: 'No data provided'});
-
-  eventCollection.where("eventId", "==", eventId).get().then((querySnapshot) => {
-    if (!querySnapshot.empty) {
-      res.status(200).json({data:querySnapshot.docs[0].data()})
-      // querySnapshot.docs[0].ref.update(updateData)
-      // .then(()=>res.status(200).json({message: 'Success. Document updated'}))
-      // .catch((err) => res.status(500).json({message: 'Error updating document'}));
-    } else {
-      res.status(500).json({message: 'No document with id'});
-    }
-  }).catch((err) => {
-    res.status(500).json({message: 'Error fetching document'});
-  });
+  res.status(200).json(updateData);
+  
+  // eventCollection.where("eventId", "==", eventId).get().then((querySnapshot) => {
+  //   if (!querySnapshot.empty) {
+  //     //res.status(200).json({data:querySnapshot.docs[0].data()})
+  //     querySnapshot.docs[0].ref.update(updateData)
+  //     .then(()=>res.status(200).json({message: 'Success. Document updated'}))
+  //     .catch((err) => res.status(500).json({message: 'Error updating document'}));
+  //   } else {
+  //     res.status(500).json({message: 'No document with id'});
+  //   }
+  // }).catch((err) => {
+  //   res.status(500).json({message: 'Error fetching document'});
+  // });
 });
 
 
