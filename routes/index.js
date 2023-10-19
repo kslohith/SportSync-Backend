@@ -69,7 +69,49 @@ router.get('/getEventByUser', function(req, res, next) {
   });
 });
 
+//for debugging purposes
+/*router.delete('/events', (req, res) => {
+  const eventCollection = db.collection("event");
+  eventCollection.get().then((snapshot) => {
 
+  })
+})*/
+
+router.get('/event', (req, res) => {
+  const eventId = req.query.eventId;
+  const eventCollection = db.collection("event");
+
+  eventCollection.where("eventId", "==", eventId).get().then((querySnapshot) => {
+    if (!querySnapshot.empty) {
+      res.status(200).json({data:querySnapshot.docs[0].data()});
+    }
+  }).catch((err) => {
+    res.status(500).json({message: 'Error fetching data'});
+  });
+});
+
+// router.post('/event', (req, res) => {
+//   const eventId = req.query.eventId;
+//   const eventCollection = db.collection("event");
+
+//   const updateFields = Object.keys(req.body);
+//   const updateData = {};
+//   updateFields.forEach((field) => {
+//     updateData[field]=req.body[field];
+//   });
+
+//   eventCollection.where("eventId", "==", eventId).get().then((querySnapshot) => {
+//     if (!querySnapshot.empty) {
+//       querySnapshot.docs[0].ref.update(updateData)
+//       .then(()=>res.status(200).json({message: 'Success. Document updated'}))
+//       .catch((err) => res.status(500).json({message: 'Error updating document'}));
+//     } else {
+//       res.status(500).json({message: 'No document with id'});
+//     }
+//   }).catch((err) => {
+//     res.status(500).json({message: 'Error fetching document'});
+//   });
+// });
 
 
 module.exports = router;
