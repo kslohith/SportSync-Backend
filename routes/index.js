@@ -96,7 +96,7 @@ router.post('/event', (req, res) => {
 
   const updateFields = Object.keys(req.body);
 
-  res.status(200).json({updateFields});
+  res.status(200).json({data: updateFields});
 
   // const updateData = {};
   // updateFields.forEach((field) => {
