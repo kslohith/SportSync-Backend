@@ -28,7 +28,10 @@ router.post('/createEvent', function(req, res, next) {
     slotsRemaining: req.body.slotsRemaining,
     isPrivate: req.body.isPrivate,
     capacity: req.body.capacity,
-    attendees: req.body.attendees
+    attendees: req.body.attendees,
+    dateOfCreation: req.body.dateOfCreation,
+    eventSkill: req.body.eventSkill,
+    requestedAttendees: req.body.requestedAttendees
   }
 
   db.collection('event').doc(getRandomId(8)).set(data)
@@ -64,5 +67,8 @@ router.get('/getEventByUser', function(req, res, next) {
     res.status(500).json({message: 'Error fetching data'});
   });
 });
+
+
+
 
 module.exports = router;
