@@ -95,6 +95,7 @@ router.post('/event', (req, res) => {
   const eventCollection = db.collection("event");
 
   const updateFields = Object.keys(req.body);
+  console.log(updateFields);
   const updateData = {};
   updateFields.forEach((field) => {
     if (field === 'attendees' || field === 'requestedAttendees') {
@@ -107,7 +108,8 @@ router.post('/event', (req, res) => {
       updateData[field]= req.body[field];
     }
   });
-  
+  res.status(200).json({updateData});
+
   if (updateData.length() == 0) res.status(500).json({message: 'No data provided'});
 
   eventCollection.where("eventId", "==", eventId).get().then((querySnapshot) => {
