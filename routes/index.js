@@ -96,21 +96,21 @@ router.post('/event', (req, res) => {
 
   const updateFields = Object.keys(req.body);
 
-  res.status(200).json({updateFields});
+  //res.status(200).json({updateFields});
 
-  // const updateData = {};
-  // updateFields.forEach((field) => {
-  //   if (field === 'attendees' || field === 'requestedAttendees') {
-  //     if (req.body[field].op === 'remove') {
-  //       updateData[field] = firebase.firestore.FieldValue.arrayRemove(req.body[field].list);
-  //     } else {
-  //       updateData[field] = firebase.firestore.FieldValue.arrayUnion(req.body[field].list);
-  //     }
-  //   } else {
-  //     updateData[field]= req.body[field];
-  //   }
-  // });
-  // res.status(200).json({updateData});
+  const updateData = {};
+  updateFields.forEach((field) => {
+    if (field === 'attendees' || field === 'requestedAttendees') {
+      if (req.body[field].op === 'remove') {
+        updateData[field] = firebase.firestore.FieldValue.arrayRemove(req.body[field].list);
+      } else {
+        updateData[field] = firebase.firestore.FieldValue.arrayUnion(req.body[field].list);
+      }
+    } else {
+      updateData[field]= req.body[field];
+    }
+  });
+  res.status(200).json({updateData});
 
   // if (updateData.length() == 0) res.status(500).json({message: 'No data provided'});
 
