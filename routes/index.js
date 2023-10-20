@@ -95,37 +95,70 @@ router.post('/event', (req, res) => {
   const eventCollection = db.collection("event");
 
   const updateFields = Object.keys(req.body);
-
-  //res.status(200).json({updateFields});
-
-  const updateData = {};
-  updateFields.forEach((field) => {
-    if (field === 'attendees' || field === 'requestedAttendees') {
-      if (req.body[field].op === 'remove') {
-        updateData[field] = firebase.firestore.FieldValue.arrayRemove(req.body[field].list);
-      } else {
-        updateData[field] = firebase.firestore.FieldValue.arrayUnion(req.body[field].list);
-      }
-    } else {
-      updateData[field]= req.body[field];
-    }
-  });
-  
-  //if (updateData.length() == 0) res.status(500).json({message: 'No data provided'});
-  res.status(200).json(updateData);
-  
-  // eventCollection.where("eventId", "==", eventId).get().then((querySnapshot) => {
-  //   if (!querySnapshot.empty) {
-  //     //res.status(200).json({data:querySnapshot.docs[0].data()})
-  //     querySnapshot.docs[0].ref.update(updateData)
-  //     .then(()=>res.status(200).json({message: 'Success. Document updated'}))
-  //     .catch((err) => res.status(500).json({message: 'Error updating document'}));
+  const updateData = req.body;
+  // updateFields.forEach((field) => {
+  //   if (field === 'attendees' || field === 'requestedAttendees') {
+  //     if (req.body[field].op === 'remove') {
+  //       updateData[field] = db.FieldValue.arrayRemove(req.body[field].list);
+  //     } else {
+  //       updateData[field] = db.FieldValue.arrayUnion(req.body[field].list);
+  //     }
   //   } else {
-  //     res.status(500).json({message: 'No document with id'});
+  //     updateData[field]= req.body[field];
   //   }
-  // }).catch((err) => {
-  //   res.status(500).json({message: 'Error fetching document'});
   // });
+  //res.status(500).json(updateData);
+  //if (Object.keys(updateData) == 0) res.status(500).json({message: 'No data provided'});
+  //res.status(500).json(updateData);
+  eventCollection.where("eventId", "==", eventId).get().then((querySnapshot) => {
+    if (!querySnapshot.empty) {
+      const d = querySnapshot.docs[0].data();
+      if (updateData.hasOwnProperty("attendees")) {
+        var listAttend = [...d.attendees];
+        if (updateData.attendees.op === "remove") {
+          updateData.attendees.list.forEach((name) => {
+            const i = listAttend.indexOf(name);
+            listAttend.splice(i, 1);
+          });
+          updateData["attendees"] = listAttend;
+        } else if (updateData.attendees.op === "add") {
+          updateData.attendees.list.forEach((name) => {
+            listAttend.push(name);
+          });
+          updateData["attendees"] = listAttend;
+        }
+      }
+      //d.attendees.add("Person");
+      
+      // const i = listAttend.indexOf("Matthew");
+      // listAttend.splice(i, 1);
+      //res.status(200).json(updateData);
+
+      if (updateData.hasOwnProperty("requestedAttendees")) {
+        var listAttend = [...d.attendees];
+        if (updateData.requestedAttendees.op === "remove") {
+          updateData.requestedAttendees.list.forEach((name) => {
+            const i = listAttend.indexOf(name);
+            listAttend.splice(i, 1);
+          });
+          updateData["requestedAttendees"] = listAttend;
+        } else if (updateData.requestedAttendees.op === "add") {
+          updateData.requestedAttendees.list.forEach((name) => {
+            listAttend.push(name);
+          });
+          updateData["requestedAttendees"] = listAttend;
+        }
+      }
+
+      querySnapshot.docs[0].ref.update(updateData)
+      .then(()=>res.status(200).json({message: 'Success. Document updated'}))
+      .catch((err) => res.status(500).json({message: 'Error updating document'}));
+    } else {
+      res.status(500).json({message: 'No document with id'});
+    }
+  }).catch((err) => {
+    res.status(500).json({message: 'Error fetching document'});
+  });
 });
 
 
