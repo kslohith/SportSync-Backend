@@ -111,7 +111,7 @@ router.post('/event', (req, res) => {
     }
   });
   
-  if (updateData.length() == 0) res.status(500).json({message: 'No data provided'});
+  //if (updateData.length() == 0) res.status(500).json({message: 'No data provided'});
   res.status(200).json(updateData);
   
   // eventCollection.where("eventId", "==", eventId).get().then((querySnapshot) => {
