@@ -135,7 +135,7 @@ router.post('/event', (req, res) => {
       //res.status(200).json(updateData);
 
       if (updateData.hasOwnProperty("requestedAttendees")) {
-        var listAttend = [...d.attendees];
+        var listAttend = [...d.requestedAttendees];
         if (updateData.requestedAttendees.op === "remove") {
           updateData.requestedAttendees.list.forEach((name) => {
             const i = listAttend.indexOf(name);
