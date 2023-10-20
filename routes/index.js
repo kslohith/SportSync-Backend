@@ -22,6 +22,7 @@ function getRandomId(length) {
 router.post('/createEvent', function(req, res, next) {
   const data = {
     eventName: req.body.eventName,
+    sport: req.body.sport,
     organizer: req.body.organizer,
     venue: req.body.venue,
     date: req.body.date,
