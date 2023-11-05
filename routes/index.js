@@ -167,9 +167,7 @@ router.get('/getAllEvents', function(req, res, next) {
   const data = {
     organizer: req.query.name,
   }
-  const filterKey = "organizer"
-  const filterValue = data.organizer
-
+  
   const eventCollection = db.collection("event");
 
   eventCollection.get()
@@ -183,6 +181,16 @@ router.get('/getAllEvents', function(req, res, next) {
   })
   .catch((error) => {
     res.status(500).json({message: 'Error fetching data'});
+  });
+});
+
+router.get('/getUpcomingGames', function(req, res, next) {
+  const data = {
+    email: req.query.email,
+  }  
+  const eventCollection = db.collection("event");
+  return eventCollection.filter((item) => {
+    return item.attendees.includes(data.email);
   });
 });
 
