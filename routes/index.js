@@ -189,11 +189,22 @@ router.get('/getUpcomingGames', function(req, res, next) {
     email: req.query.email,
   }  
   const eventCollection = db.collection("event");
-  return eventCollection.filter((item) => {
-    return item.attendees.includes(data.email);
+  eventCollection.get()
+  .then((querySnapshot) => {
+    const filteredItems = [];
+    querySnapshot.forEach((doc) => {
+      const itemData = doc.data();
+      if(itemData.attendees.includes(data.email)){
+        filteredItems.push(itemData);
+      }
+    });
+    console.log(filteredItems);
+    res.status(200).json({data:filteredItems});
+  })
+  .catch((error) => {
+    res.status(500).json({message: 'Error fetching data'});
   });
 });
-
 
 
 module.exports = router;
