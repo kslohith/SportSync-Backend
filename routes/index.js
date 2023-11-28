@@ -228,10 +228,11 @@ router.get('/getRequests', function(req, res, next) {
   });
 });
 
-router.post('/deleteEvent', function(res,req) {
-  const id = req.body.id; 
-  
-  db.collection("event").where("eventId", "==", id).get().then((qs)=>{
+router.post('/deleteEvent', function(req,res, next) {
+  const data = {
+    id: req.body.id, 
+  }
+  db.collection("event").where("eventId", "==", data.id).get().then((qs)=>{
     if (!qs.empty) {
       db.collection("event").doc(qs.docs[0].id).delete().then(()=>{
         res.status(200).json({message: 'Event successfully deleted.'});
@@ -239,10 +240,10 @@ router.post('/deleteEvent', function(res,req) {
         res.status(500).json({message: 'Something went wrong in deletion'});
       });
     } else {
-      res.status(400).json({message: 'Event does not exist'})
+      res.status(400).json({message: 'Event does not exist'});
     }
   }).catch((err)=>{
-    res.status(500).json({message: 'Something went wrong in search'});
+    res.status(500).json({message: 'Something went wrong in search', error: err});
   });
 });
 
