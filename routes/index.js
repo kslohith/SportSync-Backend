@@ -85,6 +85,8 @@ router.get('/event', (req, res) => {
   eventCollection.where("eventId", "==", eventId).get().then((querySnapshot) => {
     if (!querySnapshot.empty) {
       res.status(200).json({data:querySnapshot.docs[0].data()});
+    } else {
+      res.status(500).json({message: 'Event not found'});
     }
   }).catch((err) => {
     res.status(500).json({message: 'Error fetching data'});
