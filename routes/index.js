@@ -253,7 +253,7 @@ router.post('/toggleABtest', function(req, res, next) {
   const data = {
     enableABtest: req.body.enableABtest,
   }  
-    db.collection('abtest').doc('enableABtest').set(data.enableABtest)
+    db.collection('abtest').doc('enableABtest').set(data)
     .then(() => {
       res.status(200).json({message: 'Data Successfully inserted'});
     })
