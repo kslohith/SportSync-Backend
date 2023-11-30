@@ -85,6 +85,8 @@ router.get('/event', (req, res) => {
   eventCollection.where("eventId", "==", eventId).get().then((querySnapshot) => {
     if (!querySnapshot.empty) {
       res.status(200).json({data:querySnapshot.docs[0].data()});
+    } else {
+      res.status(500).json({message: 'Event not found'});
     }
   }).catch((err) => {
     res.status(500).json({message: 'Error fetching data'});
@@ -206,6 +208,46 @@ router.get('/getUpcomingGames', function(req, res, next) {
   });
 });
 
+router.get('/getRequests', function(req, res, next) {
+  const data = {
+    email: req.query.email,
+  }  
+  const eventCollection = db.collection("event");
+  eventCollection.get()
+  .then((querySnapshot) => {
+    const filteredItems = [];
+    querySnapshot.forEach((doc) => {
+      const itemData = doc.data();
+      if(itemData.requestedAttendees.includes(data.email)){
+        filteredItems.push(itemData);
+      }
+    });
+    console.log(filteredItems);
+    res.status(200).json({data:filteredItems});
+  })
+  .catch((error) => {
+    res.status(500).json({message: 'Error fetching data'});
+  });
+});
+
+router.post('/deleteEvent', function(req,res, next) {
+  const data = {
+    id: req.body.id, 
+  }
+  db.collection("event").where("eventId", "==", data.id).get().then((qs)=>{
+    if (!qs.empty) {
+      db.collection("event").doc(qs.docs[0].id).delete().then(()=>{
+        res.status(200).json({message: 'Event successfully deleted.'});
+      }).catch((err) => {
+        res.status(500).json({message: 'Something went wrong in deletion'});
+      });
+    } else {
+      res.status(400).json({message: 'Event does not exist'});
+    }
+  }).catch((err)=>{
+    res.status(500).json({message: 'Something went wrong in search', error: err});
+  });
+});
 
 router.post('/toggleABtest', function(req, res, next) {
   const data = {
