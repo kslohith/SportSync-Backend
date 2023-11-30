@@ -207,4 +207,17 @@ router.get('/getUpcomingGames', function(req, res, next) {
 });
 
 
+router.post('/toggleABtest', function(req, res, next) {
+  const data = {
+    enableABtest: req.body.enableABtest,
+  }  
+    db.collection('abtest').doc('enableABtest').set(data.enableABtest)
+    .then(() => {
+      res.status(200).json({message: 'Data Successfully inserted'});
+    })
+    .catch((error) => {
+      res.status(500).json({message: 'Data insertion error ! Internal Server Error'});
+    });
+});
+
 module.exports = router;
