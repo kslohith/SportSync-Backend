@@ -262,4 +262,21 @@ router.post('/toggleABtest', function(req, res, next) {
     });
 });
 
+router.get('/getABstatus', function(req, res, next) {
+  const eventCollection = db.collection("abtest");
+  eventCollection.get()
+  .then((querySnapshot) => {
+    const filteredItems = [];
+    querySnapshot.forEach((doc) => {
+      const itemData = doc.data();
+      filteredItems.push(itemData);
+    });
+    console.log(filteredItems);
+    res.status(200).json({data:filteredItems});
+  })
+  .catch((error) => {
+    res.status(500).json({message: 'Error fetching data'});
+  });
+});
+
 module.exports = router;
